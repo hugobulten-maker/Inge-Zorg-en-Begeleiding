@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Contact — Inge Zorg en Begeleiding</title>
+  <meta name="description" content="Neem contact op met Inge Zorg en Begeleiding voor vragen of een kennismaking.">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="/">Inge Zorg en Begeleiding</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about.html">Over ons</a>
+      <a href="/diensten.html">Diensten</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+<main class="container contact-page">
+  <h1>Contact</h1>
+  <p>Vul het formulier in of bel/app ons direct.</p>
+
+  <form id="contactForm">
+    <label for="name">Naam</label>
+    <input id="name" name="name" required>
+
+    <label for="email">E-mail</label>
+    <input id="email" name="email" type="email" required>
+
+    <label for="message">Bericht</label>
+    <textarea id="message" name="message" rows="6" required></textarea>
+
+    <button type="submit">Verstuur</button>
+  </form>
+
+  <p>Of bel: <a href="tel:+31600000000">+31 6 00 00 00 00</a> (vul je nummer in)</p>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <p class="note">Opmerking: om het formulier te laten werken, vervang de Formspree-endpoint in README of configureer een formulierdienst. Het formulier probeert te verzenden via fetch naar de actie-URL als die is ingesteld.</p>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; <span id="year4"></span> Inge Zorg en Begeleiding</p>
+  </div>
+</footer>
+
+<script>
+// Eenvoudige client-side formulierafhandeling – vervang formAction in README met je Formspree-endpoint
+const form = document.getElementById('contactForm');
+const status = document.getElementById('status');
+const formAction = '';// Vul hier je Formspree endpoint in bijv: 'https://formspree.io/f/xyz'
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  status.textContent = 'Bezig met verzenden…';
+  const data = {
+    name: form.name.value,
+    email: form.email.value,
+    message: form.message.value
+  };
+  try {
+    if (!formAction) throw new Error('no-endpoint');
+    const res = await fetch(formAction, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      status.textContent = 'Bedankt — uw bericht is verzonden.';
+      form.reset();
+    } else {
+      throw new Error('send-failed');
+    }
+  } catch (err) {
+    status.textContent = 'Kan bericht niet verzenden via het formulier. Gebruik aub e-mail of bel.';
+  }
+});
+
+document.getElementById('year4').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
